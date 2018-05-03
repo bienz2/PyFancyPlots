@@ -18,7 +18,7 @@ methods:
 Default and Luke-recommended settings are displayed in a simple line and scatter
 plot below.  Make sure to call add_luke_options() and save_plot(...) to add
 these settings to your figures. 
-![](figures/line_plot.pdf)
+![](figures/line_plot.png)
 
 ## Standard and Stacked BarPlots
 The standard and stacked bar plots (available in methods barplot(...) and
@@ -26,8 +26,8 @@ stacked_barplot(...)) take a typical list of x_data and either a
 single list or list of lists for y_data.  If y_data is a list of lists, a list
 of corresponding labels is also required.  Each list of y_data will be plotted
 at all x_data positions, as shown below.
-![](figures/barplot.pdf)
-![](figures/stacked_barplot.pdf)
+![](figures/barplot.png)
+![](figures/stacked_barplot.png)
 
 ## Partially Stacked BarPlot
 The previous standard and stacked barplots can also be combined with method
@@ -36,6 +36,6 @@ list of y_data.  The list for y_data contains both y_data lists and lists of
 lists.  E.g. y_data = [y0, y1, [y2, y3], y4, [y5, y6]] will plot y0, y1, and y4
 as normal barplots, while y3 will be stacked on top of y2, and y6 will also be
 stacked on y5.  Correpsonding labels should be in the same format as y_data.
-![](figures/partially_stacked_barplot.pdf)
+![](figures/partially_stacked_barplot.png)
 
 
