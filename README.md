@@ -5,6 +5,9 @@ Does your advisor enjoy fancy plots?  Is his name Luke?  Then this plotting scri
 Python plotting tool with default options to make plots easy to read.  This
 script uses matplotlib and Seaborn.  
 
+## Testimonials
+"That plot looks great." -- Luke
+
 ## Plotting Examples
 Import `plot.py' for default plotting parameters to be set.  A few important
 methods:
