@@ -78,7 +78,7 @@ def add_luke_options():
 
     ax = plt.gca()
     ax.xaxis.grid(False)
-    plt.grid(True)
+    #plt.grid(True)
     sns.despine(left=True, right=True)
 
 ################################
@@ -153,6 +153,9 @@ def set_scale(xscale, yscale):
     ax.set_yscale(yscale)
     ax.set_autoscaley_on(False)    
 
+def get_ax():
+    return plt.gca()
+
 ################################
 ###  Set figure size (by inches)
 ################################
@@ -189,7 +192,7 @@ def add_anchored_legend(ncol = 2,
         **kargs):
 
     global lgd
-    lgd = plt.legend(loc = loc, ncol = ncol, bbox_to_anchor = anchor, 
+    lgd = plt.legend(loc = loc, ncol = (int)(ncol), bbox_to_anchor = anchor, 
             frameon = frameon, fontsize = fontsize, **kargs)
 
 ################################
@@ -336,7 +339,11 @@ def scatter_plot(x_data,
     return plt.scatter(x_data, y_data, c = color, edgecolors='none', 
             clip_on = False, marker = marker, **kargs)
 
-
+################################
+###  Spy of Matrix (from github lukeolson cspy.py)
+################################
+def spy(A, color = 'black', markersize = None):
+    plt.spy(A, rasterized=True, markersize=markersize)
 
 ################################
 ###  Creates a standard barplot
@@ -356,7 +363,7 @@ def barplot(x_data,
         if color is None:
             color = next_color()
         bplot = sns.barplot(x=x_data, y=y_data, color=color, ax = ax,
-                **kargs)
+                edgecolor='black', **kargs)
     else:
         pd_dict = dict()
         pd_dict['x'] = x_data
@@ -366,7 +373,7 @@ def barplot(x_data,
         df = df.melt(id_vars=['x'], var_name='measure', value_vars=labels,
                 value_name='time')
         bplot = sns.barplot(data=df, x='x', y='time', hue='measure', ax =
-                ax, palette = get_palette(), **kargs)
+                ax, palette = get_palette(), edgecolor='black', **kargs)
         positions = [i * len(x_data) for i in range(len(labels))]
         barplot_legend(labels, positions, ax)
 
@@ -385,18 +392,29 @@ def stacked_barplot(x_data, # simple list
         ax = plt.gca()
     bplots = list()
 
+    new_y_data = list()
+    for i in range(len(y_data)):
+        new_y_data.append(list())
+        for j in range(len(y_data[i])):
+            new_y_data[i].append(y_data[i][j])
+
+    for i in range(len(labels)):
+        for j in range(len(labels)-1, i, -1):
+            for k in range(0, len(new_y_data[i])):
+                new_y_data[i][k] += new_y_data[j][k]
+
     colors = get_palette(len(labels))
     plots = list()
     for i in range(len(labels)):
         pd_dict = dict()
         pd_dict['x'] = x_data
-        pd_dict[labels[i]] = y_data[i]
+        pd_dict[labels[i]] = new_y_data[i]
         df = pd.DataFrame(pd_dict)
         df = df.melt(id_vars=['x'], var_name='measure',
                 value_vars=[labels[i]],
                 value_name='time')
         bplots.append(sns.barplot(ax = ax, data=df, x='x', y='time',
-            color=colors[i]), **kargs)
+            color=colors[i], edgecolor='black', **kargs))
     positions = [i * len(x_data) for i in range(len(labels))]
     barplot_legend(labels, positions, ax)
     return bplots
@@ -490,21 +508,21 @@ def partially_stacked_barplot(x_data, # simple list
     barplot_legend(label_list, positions, ax)
 
 
-
 ################################
 ### Save the plot to a file
 ### Clears all data after by default
 ################################
 def save_plot(filename, 
-        clear_plot = True):
+        clear_plot = True, 
+        **kargs):
     global lgd
 
     if lgd is None:
         plt.savefig(filename, bbox_inches = "tight", clip_on = False,
-                transparent=True)
+                transparent=True, **kargs)
     else:
         plt.savefig(filename, bbox_extra_artists=(lgd,), bbox_inches = "tight", clip_on = False,
-                transparent=True)
+                transparent=True, **kargs)
 
     if clear_plot:
         clear()
