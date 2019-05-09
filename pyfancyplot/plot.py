@@ -8,7 +8,7 @@ font_style = 'serif'
 linewidth = 3
 xscale = 'linear'
 yscale = 'linear'
-palette_name = None
+palette_name = "tab20" 
 palette_n_colors = 7
 palette_desat = None
 color_ctr = 0
@@ -39,7 +39,8 @@ def default_options():
         'ytick.labelsize': fontsize,
         'text.usetex': True,
         'figure.figsize': fig_size,
-        'lines.linewidth': 4}
+        'lines.linewidth': 4,
+        'hatch.linewidth': 3.0}
     plt.rcParams.update(params)
 
     global font_style
@@ -56,7 +57,7 @@ def default_options():
     linewidth = 3
     xscale = 'linear'
     yscale = 'linear'
-    palette_name = None
+    palette_name = "tab20"
     palette_n_colors = 7
     palette_desat = None
     color_ctr = 0
@@ -88,6 +89,7 @@ def add_luke_options():
 ################################
 def clear():
     plt.clf()
+    plt.close('all')
     default_options()
 
 # Automatically set default options
@@ -102,7 +104,7 @@ add_luke_options() ## add these by default, too
 ###    - list of colors
 ###    - list of RGB values
 ################################
-def set_palette(palette = None, n_colors = None, desat = None):
+def set_palette(palette = "tab20", n_colors = None, desat = None):
     global palette_name
     global palette_n_colors 
     global palette_desat
@@ -326,6 +328,25 @@ def line_plot(y_data,
             alpha = alpha, linewidth = linewidth, **kargs)
 
 
+def violin_plot(x_data, y_data, labels = None, add_legend = True, ax = None,**kargs): 
+    if ax is None:
+        ax = plt.gca()
+
+    if labels is None:
+        vplot = sns.barplot(x=x_data, y=y_data)
+    else:
+        pd_dict = dict()
+        pd_dict['x'] = x_data
+        for i in range(len(labels)):
+            pd_dict[labels[i]] = y_data[i]
+        df = pd.DataFrame(pd_dict)
+        df = df.melt(id_vars=['x'], var_name='measure', value_vars=labels,
+                value_name='time')
+        vplot = sns.violinplot(data=df, x='x', y='time', hue='measure', ax =
+                ax, palette = get_palette(), edgecolor='black', **kargs)
+
+    return vplot
+
 ################################
 ###  Standard scatter plot
 ################################
@@ -340,7 +361,7 @@ def scatter_plot(x_data,
             clip_on = False, marker = marker, **kargs)
 
 ################################
-###  Spy of Matrix (from github lukeolson cspy.py)
+###  Spy of Matrix 
 ################################
 def spy(A, color = 'black', markersize = None):
     plt.spy(A, rasterized=True, markersize=markersize)
@@ -374,8 +395,9 @@ def barplot(x_data,
                 value_name='time')
         bplot = sns.barplot(data=df, x='x', y='time', hue='measure', ax =
                 ax, palette = get_palette(), edgecolor='black', **kargs)
-        positions = [i * len(x_data) for i in range(len(labels))]
-        barplot_legend(labels, positions, ax)
+        if add_legend:
+            positions = [i * len(x_data) for i in range(len(labels))]
+            barplot_legend(labels, positions, ax)
 
 
     return bplot
