@@ -13,6 +13,7 @@ palette_n_colors = 7
 palette_desat = None
 color_ctr = 0
 lgd = None
+fig = None
 
 ################################
 ###  Set Default Options
@@ -52,6 +53,7 @@ def default_options():
     global palette_desat
     global color_ctr
     global ldg
+    global fig
 
     font_style = 'serif'
     linewidth = 3
@@ -162,6 +164,7 @@ def get_ax():
 ###  Set figure size (by inches)
 ################################
 def set_figure_size(dim_inches):
+    global fig
     fig.set_size_inches(dim_inches)
 
 ################################
@@ -541,10 +544,10 @@ def save_plot(filename,
 
     if lgd is None:
         plt.savefig(filename, bbox_inches = "tight", clip_on = False,
-                transparent=True, **kargs)
+                transparent=True, rasterized=True, **kargs)
     else:
         plt.savefig(filename, bbox_extra_artists=(lgd,), bbox_inches = "tight", clip_on = False,
-                transparent=True, **kargs)
+                transparent=True, rasterized=True, **kargs)
 
     if clear_plot:
         clear()
